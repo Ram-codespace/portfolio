@@ -2,96 +2,11 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FiMenu, FiX } from 'react-icons/fi'
 
-const LINKS = [
-  { n: '01', label: 'Home', href: '#home' },
-  { n: '02', label: 'About', href: '#about' },
-  { n: '03', label: 'Skills', href: '#skills' },
-  { n: '04', label: 'Experience', href: '#experience' },
-  { n: '05', label: 'Projects', href: '#projects' },
-  { n: '06', label: 'Contact', href: '#contact' },
-]
+const LINKS = [{ n: '01', label: 'Home', href: '#home' }, { n: '02', label: 'About', href: '#about' }, { n: '03', label: 'Skills', href: '#skills' }, { n: '04', label: 'Experience', href: '#experience' }, { n: '05', label: 'Projects', href: '#projects' }, { n: '06', label: 'Contact', href: '#contact' }]
 
 export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false)
-  const [open, setOpen] = useState(false)
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20)
-    window.addEventListener('scroll', onScroll)
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
-
-  const go = (href) => {
-    setOpen(false)
-    document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' })
-  }
-
-  return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-[80] transition-all duration-500 ${
-        scrolled ? 'glass py-3' : 'py-6 bg-transparent'
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-6 lg:px-10 flex items-center justify-between">
-        <a
-          href="#home"
-          onClick={(e) => { e.preventDefault(); go('#home') }}
-          className="font-display text-xl tracking-[0.2em] font-medium"
-          data-cursor
-        >
-          RAMAN
-        </a>
-
-        <nav className="hidden lg:flex items-center gap-10">
-          {LINKS.map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
-              data-cursor
-              onClick={(e) => { e.preventDefault(); go(l.href) }}
-              className="group relative text-sm text-mist hover:text-white transition-colors"
-            >
-              <span className="text-accent/70 font-display text-xs mr-2">{l.n}</span>
-              {l.label}
-              <span className="absolute -bottom-1 left-7 right-0 h-px bg-accent scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-300" />
-            </a>
-          ))}
-        </nav>
-
-        <button
-          data-cursor
-          className="lg:hidden text-white"
-          onClick={() => setOpen(!open)}
-          aria-label="Toggle menu"
-        >
-          {open ? <FiX size={24} /> : <FiMenu size={24} />}
-        </button>
-      </div>
-
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden glass overflow-hidden"
-          >
-            <div className="flex flex-col px-6 py-6 gap-5">
-              {LINKS.map((l) => (
-                <a
-                  key={l.href}
-                  href={l.href}
-                  onClick={(e) => { e.preventDefault(); go(l.href) }}
-                  className="text-base text-mist hover:text-white transition-colors"
-                >
-                  <span className="text-accent/70 font-display text-xs mr-2">{l.n}</span>
-                  {l.label}
-                </a>
-              ))}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </header>
-  )
+  const [scrolled, setScrolled] = useState(false); const [open, setOpen] = useState(false)
+  useEffect(() => { const onScroll = () => setScrolled(window.scrollY > 20); onScroll(); window.addEventListener('scroll', onScroll, { passive: true }); return () => window.removeEventListener('scroll', onScroll) }, [])
+  const go = (href) => { setOpen(false); document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' }) }
+  return <header className={`fixed top-0 left-0 right-0 z-[80] transition-all duration-500 ${scrolled ? 'glass py-3' : 'py-6 bg-transparent'}`}><div className="max-w-7xl mx-auto px-6 lg:px-10 flex items-center justify-between"><a href="#home" onClick={(e) => { e.preventDefault(); go('#home') }} className="font-display text-xl tracking-[.2em] font-medium" data-cursor aria-label="Raman home">RAMAN</a><nav className="hidden lg:flex items-center gap-8" aria-label="Main navigation">{LINKS.map((l) => <a key={l.href} href={l.href} data-cursor onClick={(e) => { e.preventDefault(); go(l.href) }} className="group relative text-sm text-mist hover:text-white transition-colors"><span className="text-accent/70 font-display text-xs mr-2">{l.n}</span>{l.label}<span className="absolute -bottom-1 left-7 right-0 h-px bg-accent scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-300" /></a>)}</nav><button data-cursor className="lg:hidden text-white" onClick={() => setOpen(!open)} aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open}>{open ? <FiX size={24} /> : <FiMenu size={24} />}</button></div><AnimatePresence>{open && <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="lg:hidden glass overflow-hidden"><div className="flex flex-col px-6 py-6 gap-5">{LINKS.map((l, i) => <motion.a initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * .04 }} key={l.href} href={l.href} onClick={(e) => { e.preventDefault(); go(l.href) }} className="text-base text-mist hover:text-white transition-colors"><span className="text-accent/70 font-display text-xs mr-2">{l.n}</span>{l.label}</motion.a>)}</div></motion.div>}</AnimatePresence></header>
 }

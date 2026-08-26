@@ -1,87 +1,15 @@
 import { useRef } from 'react'
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
-import { FiGithub, FiExternalLink } from 'react-icons/fi'
+import { FiGithub, FiExternalLink, FiArrowUpRight } from 'react-icons/fi'
 
 export default function ProjectCard({ project, index }) {
-  const ref = useRef(null)
-  const x = useMotionValue(0)
-  const y = useMotionValue(0)
-  const rotateX = useSpring(useTransform(y, [-0.5, 0.5], [8, -8]), { stiffness: 200, damping: 20 })
-  const rotateY = useSpring(useTransform(x, [-0.5, 0.5], [-8, 8]), { stiffness: 200, damping: 20 })
-
-  const onMouseMove = (e) => {
-    const rect = ref.current.getBoundingClientRect()
-    x.set((e.clientX - rect.left) / rect.width - 0.5)
-    y.set((e.clientY - rect.top) / rect.height - 0.5)
-  }
-  const onLeave = () => { x.set(0); y.set(0) }
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-60px' }}
-      transition={{ duration: 0.6, delay: (index % 3) * 0.08 }}
-      style={{ perspective: 1000 }}
-    >
-      <motion.div
-        ref={ref}
-        onMouseMove={onMouseMove}
-        onMouseLeave={onLeave}
-        style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}
-        className="gradient-border glass rounded-2xl overflow-hidden group h-full flex flex-col"
-      >
-        <div className="relative aspect-[16/10] bg-gradient-to-br from-white/5 to-black flex items-center justify-center overflow-hidden">
-          <span className="font-display text-5xl font-bold text-white/10 group-hover:text-accent/20 transition-colors duration-500">
-            0{index + 1}
-          </span>
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
-        </div>
-
-        <div className="p-6 flex flex-col flex-1" style={{ transform: 'translateZ(20px)' }}>
-          <h3 className="font-display text-xl font-semibold mb-3">{project.title}</h3>
-
-          <div className="flex flex-wrap gap-2 mb-4">
-            {project.tech.map((t) => (
-              <span
-                key={t}
-                className="text-[11px] tracking-wide px-2.5 py-1 rounded-full border border-accent/30 text-accent"
-              >
-                {t}
-              </span>
-            ))}
-          </div>
-
-          <ul className="text-sm text-mist space-y-1.5 mb-6 flex-1">
-            {project.features.slice(0, 5).map((f) => (
-              <li key={f} className="flex items-start gap-2">
-                <span className="mt-1.5 w-1 h-1 rounded-full bg-mist flex-shrink-0" />
-                {f}
-              </li>
-            ))}
-            {project.features.length > 5 && (
-              <li className="text-accent/80 text-xs pl-3">+{project.features.length - 5} more</li>
-            )}
-          </ul>
-
-          <div className="flex gap-3 mt-auto">
-            <a
-              href={project.github}
-              data-cursor
-              className="flex items-center gap-2 text-sm px-4 py-2 rounded-full glass hover:border-accent/50 transition-colors"
-            >
-              <FiGithub size={14} /> GitHub
-            </a>
-            <a
-              href={project.demo}
-              data-cursor
-              className="flex items-center gap-2 text-sm px-4 py-2 rounded-full bg-white/5 hover:bg-accent hover:text-black transition-colors"
-            >
-              <FiExternalLink size={14} /> Live Demo
-            </a>
-          </div>
-        </div>
-      </motion.div>
-    </motion.div>
-  )
+  const ref = useRef(null); const x = useMotionValue(0); const y = useMotionValue(0)
+  const rotateX = useSpring(useTransform(y, [-.5, .5], [5, -5]), { stiffness: 180, damping: 24 }); const rotateY = useSpring(useTransform(x, [-.5, .5], [-5, 5]), { stiffness: 180, damping: 24 })
+  const onMouseMove = (e) => { const r = ref.current?.getBoundingClientRect(); if (!r) return; x.set((e.clientX-r.left)/r.width-.5); y.set((e.clientY-r.top)/r.height-.5) }; const onLeave = () => { x.set(0); y.set(0) }
+  return <motion.div initial={{ opacity: 0, y: 38 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-60px' }} transition={{ duration: .7, delay: (index % 3) * .08, ease: [.16,1,.3,1] }} style={{ perspective: 1000 }}>
+    <motion.article ref={ref} onMouseMove={onMouseMove} onMouseLeave={onLeave} style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }} className="gradient-border glass rounded-2xl overflow-hidden group h-full flex flex-col hover:border-accent/40 transition-colors">
+      <div className="relative aspect-[16/10] bg-gradient-to-br from-white/5 to-black flex items-center justify-center overflow-hidden"><div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 bg-[radial-gradient(circle_at_50%_20%,rgba(0,245,255,.16),transparent_55%)]" /><span className="font-display text-7xl font-bold text-white/10 group-hover:text-accent/20 group-hover:scale-110 transition-all duration-700">0{index+1}</span><span className="absolute bottom-4 left-5 text-[10px] uppercase tracking-[.22em] text-accent">{project.deployment || 'Full stack build'}</span></div>
+      <div className="p-6 flex flex-col flex-1" style={{ transform: 'translateZ(20px)' }}><div className="flex items-start justify-between gap-4"><h3 className="font-display text-xl font-semibold mb-3">{project.title}</h3><FiArrowUpRight className="text-accent opacity-0 -translate-x-2 translate-y-2 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0 transition-all" /></div><p className="text-sm text-mist leading-relaxed mb-5">{project.description || 'A production-minded application focused on clarity, performance, and a thoughtful user experience.'}</p><div className="flex flex-wrap gap-2 mb-5">{project.tech.map((t) => <span key={t} className="text-[11px] tracking-wide px-2.5 py-1 rounded-full border border-accent/30 text-accent">{t}</span>)}</div><ul className="text-sm text-mist space-y-1.5 mb-6 flex-1">{project.features.slice(0, 3).map((f) => <li key={f} className="flex items-start gap-2"><span className="mt-1.5 w-1 h-1 rounded-full bg-accent flex-shrink-0" />{f}</li>)}</ul><div className="flex gap-3 mt-auto"><a href={project.github} target="_blank" rel="noreferrer" data-cursor className="flex items-center gap-2 text-sm px-4 py-2 rounded-full glass hover:border-accent/50 transition-colors"><FiGithub size={14} /> GitHub</a><a href={project.demo} target="_blank" rel="noreferrer" data-cursor className="flex items-center gap-2 text-sm px-4 py-2 rounded-full bg-white/5 hover:bg-accent hover:text-black transition-colors"><FiExternalLink size={14} /> Live Demo</a></div></div>
+    </motion.article>
+  </motion.div>
 }
