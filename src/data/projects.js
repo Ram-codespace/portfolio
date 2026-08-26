@@ -1,6 +1,11 @@
+import ecommerceImage from '../assets/ecommerce-dashboard.png'
+import inventoryImage from '../assets/inventory-dashboard.png'
+import healthcareImage from '../assets/healthcare-dashboard.png'
+
 export const projects = [
   {
     title: 'E-Commerce Platform',
+    image: ecommerceImage,
     tech: ['Java', 'Spring Boot', 'React.js', 'MySQL'],
     features: [
       'User Authentication', 'Shopping Cart', 'Order Management',
@@ -11,6 +16,7 @@ export const projects = [
   },
   {
     title: 'Inventory & Order Management System (Mini ERP)',
+    image: inventoryImage,
     tech: ['Java', 'Spring Boot', 'React', 'MySQL'],
     features: [
       'Inventory Management', 'Stock Tracking', 'Purchase Orders', 'Sales Orders',
@@ -22,6 +28,7 @@ export const projects = [
   },
   {
     title: 'Hospital Appointment Scheduling System',
+    image: healthcareImage,
     tech: ['Java', 'Spring Boot', 'React', 'MySQL'],
     features: [
       'Patient Registration', 'Doctor Management', 'Appointment Booking',
