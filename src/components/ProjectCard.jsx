@@ -1,15 +1,143 @@
-import { useRef } from 'react'
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
-import { FiGithub, FiExternalLink, FiArrowUpRight } from 'react-icons/fi'
+import { motion } from 'framer-motion'
+import { FiGithub, FiExternalLink, FiLayers, FiArrowUpRight, FiCheck } from 'react-icons/fi'
 
-export default function ProjectCard({ project, index }) {
-  const ref = useRef(null); const x = useMotionValue(0); const y = useMotionValue(0)
-  const rotateX = useSpring(useTransform(y, [-.5, .5], [5, -5]), { stiffness: 180, damping: 24 }); const rotateY = useSpring(useTransform(x, [-.5, .5], [-5, 5]), { stiffness: 180, damping: 24 })
-  const onMouseMove = (e) => { const r = ref.current?.getBoundingClientRect(); if (!r) return; x.set((e.clientX-r.left)/r.width-.5); y.set((e.clientY-r.top)/r.height-.5) }; const onLeave = () => { x.set(0); y.set(0) }
-  return <motion.div initial={{ opacity: 0, y: 38 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-60px' }} transition={{ duration: .7, delay: (index % 3) * .08, ease: [.16,1,.3,1] }} style={{ perspective: 1000 }}>
-    <motion.article ref={ref} onMouseMove={onMouseMove} onMouseLeave={onLeave} style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }} className="gradient-border glass rounded-2xl overflow-hidden group h-full flex flex-col hover:border-accent/40 transition-colors">
-      <div className="relative aspect-[16/10] bg-gradient-to-br from-white/5 to-black flex items-center justify-center overflow-hidden">{project.image ? <img src={project.image} alt={`${project.title} interface preview`} className="h-full w-full object-cover opacity-80 transition duration-700 group-hover:scale-105 group-hover:opacity-100" /> : null}<div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 bg-[radial-gradient(circle_at_50%_20%,rgba(0,245,255,.16),transparent_55%)]" /><span className="font-display text-7xl font-bold text-white/10 group-hover:text-accent/20 group-hover:scale-110 transition-all duration-700">0{index+1}</span><span className="absolute bottom-4 left-5 text-[10px] uppercase tracking-[.22em] text-accent">{project.deployment || 'Full stack build'}</span></div>
-      <div className="p-6 flex flex-col flex-1" style={{ transform: 'translateZ(20px)' }}><div className="flex items-start justify-between gap-4"><h3 className="font-display text-xl font-semibold mb-3">{project.title}</h3><FiArrowUpRight className="text-accent opacity-0 -translate-x-2 translate-y-2 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0 transition-all" /></div><p className="text-sm text-mist leading-relaxed mb-5">{project.description || 'A production-minded application focused on clarity, performance, and a thoughtful user experience.'}</p><div className="flex flex-wrap gap-2 mb-5">{project.tech.map((t) => <span key={t} className="text-[11px] tracking-wide px-2.5 py-1 rounded-full border border-accent/30 text-accent">{t}</span>)}</div><ul className="text-sm text-mist space-y-1.5 mb-6 flex-1">{project.features.slice(0, 3).map((f) => <li key={f} className="flex items-start gap-2"><span className="mt-1.5 w-1 h-1 rounded-full bg-accent flex-shrink-0" />{f}</li>)}</ul><div className="flex gap-3 mt-auto"><a href={project.github} target="_blank" rel="noreferrer" data-cursor className="flex items-center gap-2 text-sm px-4 py-2 rounded-full glass hover:border-accent/50 transition-colors"><FiGithub size={14} /> GitHub</a><a href={project.demo} target="_blank" rel="noreferrer" data-cursor className="flex items-center gap-2 text-sm px-4 py-2 rounded-full bg-white/5 hover:bg-accent hover:text-black transition-colors"><FiExternalLink size={14} /> Live Demo</a></div></div>
+export default function ProjectCard({ project, index, onSelect }) {
+  const handleMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+    e.currentTarget.style.setProperty('--mouse-x', `${x}px`)
+    e.currentTarget.style.setProperty('--mouse-y', `${y}px`)
+  }
+
+  return (
+    <motion.article
+      initial={{ opacity: 0, y: 32 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-60px' }}
+      transition={{ duration: 0.6, delay: (index % 3) * 0.1, ease: [0.16, 1, 0.3, 1] }}
+      whileHover={{ y: -6 }}
+      onMouseMove={handleMouseMove}
+      className="group liquid-glass-card border border-white/15 hover:border-[#38bdf8]/40 transition-all duration-300 flex flex-col overflow-hidden shadow-2xl relative"
+    >
+      {/* Project Visual / Thumbnail */}
+      <div className="relative aspect-[16/10] bg-gradient-to-br from-slate-900 to-[#030712] overflow-hidden flex items-center justify-center border-b border-white/10">
+        {project.image ? (
+          <img
+            src={project.image}
+            alt={`${project.title} interface`}
+            className="w-full h-full object-cover object-top opacity-85 group-hover:scale-105 group-hover:opacity-100 transition-all duration-500"
+            loading="lazy"
+          />
+        ) : (
+          <div className="flex flex-col items-center justify-center p-6 text-center">
+            <span className="font-mono text-xs text-[#38bdf8] mb-2">// CORE SYSTEM ARCHITECTURE</span>
+            <span className="font-display font-bold text-lg text-white">{project.title}</span>
+          </div>
+        )}
+
+        {/* Ambient Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#070d1e] via-transparent to-transparent opacity-70" />
+
+        {/* Category Liquid Pill */}
+        <div className="absolute top-4 left-4 z-10">
+          <span className="liquid-glass-pill uppercase font-semibold text-[10px] text-sky-200 border-sky-400/30">
+            {project.category || 'Full Stack'}
+          </span>
+        </div>
+
+        {/* Numeric Index Badge */}
+        <div className="absolute bottom-3 right-4 z-10 font-mono text-xs text-white/40 font-bold tracking-widest group-hover:text-[#38bdf8] transition-colors">
+          0{index + 1} // 06
+        </div>
+      </div>
+
+      {/* Card Content */}
+      <div className="p-6 sm:p-7 flex flex-col flex-1 relative z-10">
+        <div className="flex items-start justify-between gap-3 mb-2">
+          <h3 className="font-display font-bold text-xl sm:text-2xl text-white group-hover:text-[#38bdf8] transition-colors leading-snug">
+            {project.title}
+          </h3>
+          <button
+            onClick={() => onSelect(project)}
+            data-cursor
+            data-cursor-label="VIEW"
+            aria-label={`View architecture for ${project.title}`}
+            className="p-1.5 rounded-lg text-slate-400 group-hover:text-[#38bdf8] group-hover:bg-[#38bdf8]/10 transition-colors"
+          >
+            <FiArrowUpRight size={18} />
+          </button>
+        </div>
+
+        <p className="text-sm text-slate-300 font-light leading-relaxed mb-5 line-clamp-2">
+          {project.tagline}
+        </p>
+
+        {/* Tech Stack Chips */}
+        <div className="flex flex-wrap gap-1.5 mb-5">
+          {project.tech.slice(0, 4).map((t) => (
+            <span
+              key={t}
+              className="liquid-glass-pill text-[10px] py-0.5 px-2.5 text-slate-300 border-white/10"
+            >
+              {t}
+            </span>
+          ))}
+          {project.tech.length > 4 && (
+            <span className="liquid-glass-pill text-[10px] py-0.5 px-2 text-[#38bdf8] border-[#38bdf8]/30">
+              +{project.tech.length - 4}
+            </span>
+          )}
+        </div>
+
+        {/* Feature Highlights */}
+        <div className="space-y-2 mb-6 flex-1">
+          {project.features.slice(0, 2).map((feat, i) => (
+            <div key={i} className="flex items-start gap-2 text-xs text-slate-300 font-light leading-relaxed">
+              <FiCheck className="text-emerald-400 mt-0.5 flex-shrink-0" />
+              <span className="line-clamp-1">{feat}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Card Action Footer */}
+        <div className="pt-4 border-t border-white/10 flex items-center justify-between gap-3 mt-auto">
+          <button
+            onClick={() => onSelect(project)}
+            data-cursor
+            data-cursor-label="SYSTEM"
+            className="text-xs font-mono text-[#38bdf8] hover:text-white transition-colors flex items-center gap-1.5"
+          >
+            <FiLayers size={14} />
+            <span>Architecture Blueprint</span>
+          </button>
+
+          <div className="flex items-center gap-2">
+            <a
+              href={project.github}
+              target="_blank"
+              rel="noreferrer"
+              data-cursor
+              data-cursor-label="CODE"
+              aria-label="GitHub Repository"
+              className="w-8 h-8 rounded-lg liquid-glass-pill flex items-center justify-center text-slate-300 hover:text-[#38bdf8] hover:border-[#38bdf8]/50 transition-colors"
+            >
+              <FiGithub size={14} />
+            </a>
+            <a
+              href={project.demo}
+              target="_blank"
+              rel="noreferrer"
+              data-cursor
+              data-cursor-label="DEMO"
+              aria-label="Live Demo"
+              className="w-8 h-8 rounded-lg liquid-glass-pill flex items-center justify-center text-slate-300 hover:text-[#38bdf8] hover:border-[#38bdf8]/50 transition-colors"
+            >
+              <FiExternalLink size={14} />
+            </a>
+          </div>
+        </div>
+      </div>
     </motion.article>
-  </motion.div>
+  )
 }
