@@ -1,7 +1,6 @@
 const config = {
-  plugins: {
-    "@tailwindcss/postcss": {},
-  },
+  // Tailwind is handled by @tailwindcss/vite in vite.config.js.
+  plugins: {},
 };
 
 export default config;
