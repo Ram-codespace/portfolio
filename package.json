@@ -1,5 +1,4 @@
 {
-<<<<<<< HEAD
   "name": "portfolio",
   "version": "1.0.0",
   "private": true,
@@ -42,7 +41,7 @@
   "optionalDependencies": {
     "@next/swc-win32-x64-msvc": "16.4.5",
     "lightningcss-win32-x64-msvc": "^1.32.0"
-=======
+    
   "name": "raman-portfolio",
   "private": true,
   "version": "0.0.0",
@@ -76,6 +75,5 @@
     "postcss": "^8.5.16",
     "tailwindcss": "^4.3.2",
     "vite": "^8.2.2"
->>>>>>> a76d8cfb9ee0096fa5eef5948cda96f31e2f6adf
   }
 }
